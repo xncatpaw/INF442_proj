@@ -25,7 +25,6 @@ def gen_dataset(data_orig, p=13, q=2):
             
     return dataset
 
-<<<<<<< HEAD
 def gen_dataset_v2(data_orig, p=13, q=2):
     '''
     Function used to generate the labeled dataset.
@@ -46,8 +45,6 @@ def gen_dataset_v2(data_orig, p=13, q=2):
             
     return dataset
 
-=======
->>>>>>> 9607d4a9e2133b143292f8680d13e32f518e4f90
 def to_ind_mat(seq):
     '''
     Function used to convert the acid alphabet sequence to an index matrix.
@@ -89,10 +86,3 @@ def get_matrix(matrix_name):
     data_orig = np.loadtxt(path)
     return data_orig
 
-<<<<<<< HEAD
-=======
-def 
-
-
-
->>>>>>> 9607d4a9e2133b143292f8680d13e32f518e4f90
