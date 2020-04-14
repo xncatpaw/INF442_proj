@@ -232,7 +232,11 @@ def train_model(data_orig, p, q, kernel='rbf'):
     '''
     
     # Generate the dataset.
+<<<<<<< HEAD
     dataset = utils.gen_dataset_v2(data_orig, p, q)
+=======
+    dataset = utils.gen_dataset(data_orig, p, q)
+>>>>>>> 9607d4a9e2133b143292f8680d13e32f518e4f90
     # X and Y lists.
     X_list = [utils.to_ind_vec(data[0]) for data in dataset]
     Y_list = [data[1] for data in dataset]
