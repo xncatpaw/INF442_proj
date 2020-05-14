@@ -155,6 +155,10 @@ class prob_kernel:
         - Return:
             double : score of an Amino acid 'a' in position i.
         '''
+        N = len(self.dataset)
+        total_length = len(self.dataset[0][0])*N
+        if (self.g(a)==0) return np.log10(1/(total_length*10))
+        else if (self.f(a,1)==0) return np.log10(1/(N*10)) - np.log10(self.g(a))
         return np.log10(self.f(a, i)) - np.log10(self.g(a))
     
     def score(self, w):
