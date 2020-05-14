@@ -157,8 +157,8 @@ class prob_kernel:
         '''
         N = len(self.dataset)
         total_length = len(self.dataset[0][0])*N
-        if (self.g(a)==0) return np.log10(1/(total_length*10))
-        else if (self.f(a,1)==0) return np.log10(1/(N*10)) - np.log10(self.g(a))
+        if (self.g(a)==0): return np.log10(1/(total_length*10))
+        elif (self.f(a,1)==0): return np.log10(1/(N*10)) - np.log10(self.g(a))
         return np.log10(self.f(a, i)) - np.log10(self.g(a))
     
     def score(self, w):
@@ -324,7 +324,7 @@ def train_model(data_orig, p, q, c = 0.5, kernel='rbf', word_mat=None):
     print('FPR : %.3f' % (FP/(TN+FP)))
     print('F-score : %.3f ' % F_score)
     
-    return model, TPR, FPR
+    return model, TPR, FP / (TN+FP)
 
 def model_evaluete(model, X_list_test):
     '''
