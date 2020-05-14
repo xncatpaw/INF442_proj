@@ -38,32 +38,36 @@ def gen_dataset_v2(data_orig, p=13, q=2):
     dataset = []
     for seq, ind in data_orig:
         seq_len = len(seq)
-        for i in range(ind, ind+3):
-            seq_cut = seq[i-p:i+q]
-            label = 1 if i==ind else 0
-            dataset.append([seq_cut, label])
-            
+        dataset.append([seq[ind-p:ind+q], 1])
+        i = np.random.randint(p, seq_len-q)
+        if i == ind:
+            i = i + 1
+        dataset.append([seq[i-p:i+q], 0])
+          
     return dataset
 
-def to_ind_mat(seq):
+def to_ind_mat(seq, word_mat=None):
     '''
     Function used to convert the acid alphabet sequence to an index matrix.
     - Param(s):
         seq : str, The sequence of alphabets.
+        word_mat : np.ndarray, (26, d), The word-2-vec matrix. Optional, default is None.
     - Return:
-        mat : numpy.ndarray, (n, 26), The index matrix.
+        mat : numpy.ndarray, (n, d), The index matrix.
     '''
     mat = []
+    if word_mat is None:
+        word_mat = np.diag(np.ones(26))
+    
     for alp in seq:
         ind = ord(alp.lower()) - 97
-        vec = np.zeros(26)
-        vec[ind] = 1
+        vec = word_mat[ind]
         mat.append(vec)
-    
+
     return np.array(mat)
     
     
-def to_ind_vec(seq):
+def to_ind_vec(seq, word_mat=None):
     '''
     Function used to convert the acid alphabet sequence to an index vector.
     - Param(s):
@@ -71,7 +75,7 @@ def to_ind_vec(seq):
     - Return:
         vec : numpy.ndarray, (26n,), The index vector.
     '''
-    return to_ind_mat(seq).reshape(-1)
+    return to_ind_mat(seq, word_mat).reshape(-1)
 
 def get_matrix(matrix_name):
     '''
@@ -85,4 +89,5 @@ def get_matrix(matrix_name):
     path = path + matrix_name + '_'
     data_orig = np.loadtxt(path)
     return data_orig
+
 

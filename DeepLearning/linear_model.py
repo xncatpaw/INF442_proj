@@ -42,8 +42,8 @@ class linear_model(nn.Module):
         #for i in (self.num_layer-1):
         #    linear = self.linear_list[i]
         #    X_tmp = F.ReLu(linear(X_tmp))
-        X_tmp = F.relu(self.linear_1(X_tmp))
-        X_tmp = F.relu(self.linear_2(X_tmp.view(num_batch, self.dim_hid[0])))
+        X_tmp = F.sigmoid(self.linear_1(X_tmp))
+        X_tmp = F.sigmoid(self.linear_2(X_tmp.view(num_batch, self.dim_hid[0])))
         X_tmp = self.linear_3(X_tmp.view(num_batch, self.dim_hid[1]))
 
         X_tmp = F.log_softmax(X_tmp, dim=1)
@@ -86,7 +86,7 @@ def train(dataset, dim_in, dim_out, dim_hid, use_gpu, num_epoch = 64, batch_size
     for epoch in tqdm(range(num_epoch)):
         loss_total = 0
         num_it = 0
-        for i in tqdm(range(0, num_train, batch_size)):
+        for i in range(0, num_train, batch_size):
             model.zero_grad()
 
             j = i+batch_size if i+batch_size<num_train else num_train
@@ -104,7 +104,7 @@ def train(dataset, dim_in, dim_out, dim_hid, use_gpu, num_epoch = 64, batch_size
         scheduler.step()
         loss_mean = loss_total/num_it
         loss_list.append(loss_mean)
-        print('Epoch %4d/%4d, loss : %.3f' % (epoch,num_epoch,loss_mean))
+        #print('Epoch %4d/%4d, loss : %.3f' % (epoch,num_epoch,loss_mean))
         
     plt.plot(loss_list)
     plt.legend(['loss'])
@@ -130,9 +130,23 @@ def train(dataset, dim_in, dim_out, dim_hid, use_gpu, num_epoch = 64, batch_size
         num_test_err  = np.sum(test_Y_label != test_Y)
         train_err_rate = num_train_err / len(train_Y)
         test_err_rate  = num_test_err / len(test_Y)
+        #print(test_Y_label)
+        #print(test_Y)
+        TP = np.sum([test_Y_label[i]==1 and test_Y[i]==1 for i in range(len(test_Y))])
+        FP = np.sum([test_Y_label[i]==1 and test_Y[i]!=1 for i in range(len(test_Y))])
+        TN = np.sum([test_Y_label[i]!=1 and test_Y[i]!=1 for i in range(len(test_Y))])
+        FN = np.sum([test_Y_label[i]!=1 and test_Y[i]==1 for i in range(len(test_Y))])
+        print(TP, FP, TN, FN)
+        PPV = TP/(TP+FP)
+        TPR = TP/(TP+FN)
+        F_score = 2*PPV*TPR/(PPV+TPR)
         
-        print('train err : %.2f, train err_rate : %.2f' % (err_train, train_err_rate))
-        print('test  err : %.2f, test  err_rate : %.2f' % (err_test , test_err_rate ))
+        #print('train err : %.2f, train err_rate : %.2f' % (err_train, train_err_rate))
+        #print('test  err : %.2f, test  err_rate : %.2f' % (err_test , test_err_rate ))
+        print('PPV : %.3f' % (TP/(TP+FP)))
+        print('TPR : %.3f' % (TP/(TP+FN)))
+        print('FPR : %.3f' % (FP/(TN+FP)))
+        print('F score : %.3f' % F_score)
         print('Out put example :', train_Yp[-1], test_Y[-1])
     
     model.cpu()
